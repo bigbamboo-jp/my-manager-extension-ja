@@ -1,0 +1,64 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net6.0-windows10.0.17763.0</TargetFramework>
+    <RootNamespace>My_Manager_Extension</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <PackageIcon></PackageIcon>
+    <ApplicationIcon>Icons\icon1.ico</ApplicationIcon>
+    <UseWindowsForms>True</UseWindowsForms>
+    <Copyright>Copyright © 2022 Takuma Otake</Copyright>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="AccountLoginWindowData\destination_input_page.html" />
+    <None Remove="Icons\icon2.ico" />
+    <None Remove="Images\setting_icon.png" />
+    <None Remove="Images\user_icon.png" />
+    <None Remove="Texts\Terms.txt" />
+    <None Remove="Texts\ThirdPartyNotification.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Remove="Languages\en-US.xaml" />
+    <Page Remove="Languages\ja-JP.xaml" />
+    <Page Remove="Languages\LanguageInformation.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="AccountLoginWindowData\destination_input_page.html" />
+    <Resource Include="Icons\icon2.ico" />
+    <Resource Include="Icons\icon1.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\setting_icon.png" />
+    <Resource Include="Images\user_icon.png" />
+    <Resource Include="Languages\en-US.xaml" />
+    <Resource Include="Languages\ja-JP.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Languages\LanguageInformation.xaml" />
+    <Resource Include="Texts\Terms.txt" />
+    <Resource Include="Texts\ThirdPartyNotification.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications" Version="7.1.2" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1264.42" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+  </ItemGroup>
+
+</Project>

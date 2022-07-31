@@ -1,0 +1,1 @@
+# my-manager-extension-ja

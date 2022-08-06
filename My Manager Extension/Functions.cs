@@ -693,7 +693,7 @@ namespace My_Manager_Extension
             };
             Application.Current.Resources.MergedDictionaries.Add(default_language_resource_dictionary);
             string application_language_setting;
-            if (File.Exists(Settings.setting_file_path) == true)
+            if (File.Exists(Settings.settings_file_path) == true)
             {
                 // 設定ファイルが存在する場合
                 application_language_setting = (string)((Dictionary<string, object>)Settings.settings["data"])["language"];

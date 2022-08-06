@@ -127,12 +127,6 @@ namespace My_Manager_Extension
                     break;
                 case 1:
                     // ステップ2の場合
-                    if (target_page_uri.Host == "_")
-                    {
-                        // 「次に進む」ボタンが2回以上押された場合に適切でないアドレスに接続してしまうため、再度接続先を指定する
-                        webview2.CoreWebView2.Navigate(string.Join("", server_address) + "/accounts/issue_tokens/");
-                        return;
-                    }
                     if (target_page_uri.Authority == server_address[1] && target_page_uri.AbsolutePath == "/accounts/issue_tokens/")
                     {
                         if (HttpUtility.ParseQueryString(target_page_uri.Query).Get("finished") != null)

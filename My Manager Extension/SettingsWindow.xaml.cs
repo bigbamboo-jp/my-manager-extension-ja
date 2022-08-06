@@ -125,7 +125,7 @@ namespace My_Manager_Extension
             if (api_authorization_state == 10)
             {
                 // サービスにログインしていない場合
-                service_information_label.Content = "ログインしていません。"; // 要ローカライズ
+                service_information_label.Content = "ログインしていません"; // 要ローカライズ
                 service_server_address_label.Content = string.Empty;
                 service_login_user_label.Content = string.Empty;
                 service_action_button1.Visibility = Visibility.Visible;
@@ -156,8 +156,17 @@ namespace My_Manager_Extension
                 }
                 else
                 {
-                    string user_full_name_template = ((string)user_profile["full_name_template"]).Replace("${first_name}", "{0}").Replace("${last_name}", "{1}");
-                    user_full_name = string.Format(user_full_name_template, (string)user_profile["first_name"], (string)user_profile["last_name"]).Trim();
+                    if ((string)user_profile["first_name"] == string.Empty && (string)user_profile["last_name"] == string.Empty)
+                    {
+                        // 名前が設定されていない場合
+                        user_full_name = (string)user_profile["username"];
+                    }
+                    else
+                    {
+                        // 名前が設定されている場合
+                        string user_full_name_template = ((string)user_profile["full_name_template"]).Replace("${first_name}", "{0}").Replace("${last_name}", "{1}");
+                        user_full_name = string.Format(user_full_name_template, (string)user_profile["first_name"], (string)user_profile["last_name"]).Trim();
+                    }
                 }
                 service_information_label.Content = "サービス名: " + service_name; // 要ローカライズ
                 if (server_address.StartsWith("http") == true)

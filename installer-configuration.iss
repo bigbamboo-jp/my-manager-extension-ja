@@ -19,7 +19,7 @@ AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppVerName={#MyAppName}
 AppPublisher=Open Source Developer, {#MyAppPublisher}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={commonpf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
 LicenseFile={#SourcePath}\LICENSE
@@ -86,10 +86,10 @@ Root: "HKLM"; Subkey: "SOFTWARE\Microsoft\Windows\CurrentVersion\Run"; ValueType
 Filename: "{tmp}\{#dotNETInstallerExeName}"; Parameters: "-install -quiet"
 
 [UninstallRun]
-Filename: "PowerShell"; Parameters: "-Command ""Start-Process -FilePath 'powershell' -Argument '-command taskkill -f -t -im ''{#MyAppExeName}''' -Verb RunAs; Start-Sleep -Seconds 3"""; Flags: runhidden
+Filename: "PowerShell"; Parameters: "-Command ""Start-Process -FilePath 'powershell' -Argument '-command taskkill -f -t -im ''{#MyAppExeName}''' -Verb RunAs; Start-Sleep -Seconds 3"""; Flags: runhidden; RunOnceId: "TerminateApplication"
 
 [UninstallDelete]
-Type: files; Name: "{app}\Shared\additional_data.json"
+Type: filesandordirs; Name: "{app}\Shared"
 
 [Code]
 var ErrorCode: Integer;
@@ -97,6 +97,6 @@ procedure CurStepChanged(CurStep: TSetupStep);
 begin
   if CurStep = ssDone then
   begin
-    ShellExec('', ExpandConstant('"{app}\{#MyAppExeName}"'), '', '', SW_SHOW, ewNoWait, ErrorCode);
+    ShellExec('', ExpandConstant('"{app}\{#MyAppExeName}"'), '--prepare-data', '', SW_SHOW, ewNoWait, ErrorCode);
   end;
 end;

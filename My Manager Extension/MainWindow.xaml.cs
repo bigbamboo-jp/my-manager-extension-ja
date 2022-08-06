@@ -62,6 +62,12 @@ namespace My_Manager_Extension
                 Environment.Exit(0);
                 return;
             }
+            // データの準備を行うオプションが含まれている場合
+            if (Environment.GetCommandLineArgs().Contains("--prepare-data") == true || Environment.GetCommandLineArgs().Contains("-p") == true)
+            {
+                // Protectメソッドを呼び出して付加データを生成する
+                Settings.Protect(Array.Empty<byte>());
+            }
             // トースト通知に対する操作を購読する
             Functions.StartListeningToNotificationActivation();
             // タスクトレイアイコンを表示する
@@ -347,7 +353,7 @@ namespace My_Manager_Extension
         /// </summary>
         private async Task Update_status_display()
         {
-            // 現在ユーザーのステータスが表示されていない場合のみ読み込み中の表示を出す
+            // 読み込み開始時点でユーザーのステータスが表示されていない場合のみ読み込み中の表示を出す
             if ((string)service_name_label.Content == Settings.assembly_name)
             {
                 user_full_name_label.Content = string.Empty;
@@ -362,7 +368,7 @@ namespace My_Manager_Extension
                 // サービスにログインしていない場合
                 service_name_label.Content = Settings.assembly_name;
                 user_full_name_label.Content = string.Empty;
-                user_status_label.Content = "ログインしていません。"; // 要ローカライズ
+                user_status_label.Content = "ログインしていません"; // 要ローカライズ
                 action_button1.Visibility = Visibility.Visible;
                 action_button1.Tag = 3;
                 action_button1.Content = "ログインする"; // 要ローカライズ
@@ -378,12 +384,22 @@ namespace My_Manager_Extension
                     string service_name = await Functions.GetServiceName();
                     if (service_name == null)
                     {
-                        // サービス名が取得できなかった場合は例外を発生させる
+                        // サービス名が取得できなかった場合に例外を発生させる
                         throw new Exception();
                     }
+                    string user_full_name;
                     Dictionary<string, object> user_profile = await Functions.GetUserProfile();
-                    string user_full_name_template = ((string)user_profile["full_name_template"]).Replace("${first_name}", "{0}").Replace("${last_name}", "{1}");
-                    string user_full_name = string.Format(user_full_name_template, (string)user_profile["first_name"], (string)user_profile["last_name"]).Trim();
+                    if ((string)user_profile["first_name"] == string.Empty && (string)user_profile["last_name"] == string.Empty)
+                    {
+                        // 名前が設定されていない場合
+                        user_full_name = (string)user_profile["username"];
+                    }
+                    else
+                    {
+                        // 名前が設定されている場合
+                        string user_full_name_template = ((string)user_profile["full_name_template"]).Replace("${first_name}", "{0}").Replace("${last_name}", "{1}");
+                        user_full_name = string.Format(user_full_name_template, (string)user_profile["first_name"], (string)user_profile["last_name"]).Trim();
+                    }
                     Dictionary<string, object> todays_entry_status = await Functions.GetTodaysEntryStatus();
                     service_name_label.Content = service_name;
                     user_full_name_label.Content = user_full_name;

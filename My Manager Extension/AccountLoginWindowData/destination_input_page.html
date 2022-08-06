@@ -22,7 +22,7 @@
         <input type="text" class="form-control" id="input-1" placeholder="例：www.example.com">
         <input type="text" name="dummy" style="display:none;">
       </div>
-      <button type="button" class="btn btn-primary mt-2" onclick="confirm_input_content();">次に進む</button>
+      <button type="button" class="btn btn-primary mt-2" id="continue-button" onclick="confirm_input_content();">次に進む</button>
       <p id="error-label" class="text-danger mt-3"></p>
     </form>
 
@@ -53,6 +53,7 @@
         document.getElementById('error-label').innerText = 'サーバーアドレスの末尾に記号を付けないでください。';
       }
       else {
+        document.getElementById('continue-button').disabled = true;
         window.location.href = 'https://_/?server_address=' + encodeURIComponent(input_1_value);
       }
     }

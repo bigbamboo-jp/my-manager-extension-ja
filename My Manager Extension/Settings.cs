@@ -19,7 +19,7 @@ namespace My_Manager_Extension
         internal static readonly string assembly_name = Assembly.GetExecutingAssembly().GetName().Name;
 
         // 設定ファイルのパス
-        internal static string setting_file_path
+        internal static string settings_file_path
         {
             get
             {
@@ -40,13 +40,13 @@ namespace My_Manager_Extension
         internal static string additional_data_file_path = Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), "Shared", "additional_data.json");
 
         // 設定ファイルのファイルタイプ [製品名を含む]
-        internal const string SETTING_FILE_TYPE = "Cloud OCR Snip Configuration File (Format Version 1)";
+        internal const string SETTINGS_FILE_TYPE = "My Manager Extension Settings File (Format Version 1)";
 
         // 初期状態の設定データ
         internal static readonly Dictionary<string, object> initial_setting_data = new Dictionary<string, object>
         {
             {
-                "file_type", SETTING_FILE_TYPE
+                "file_type", SETTINGS_FILE_TYPE
             },
             {
                 "data", new Dictionary<string, object>
@@ -100,13 +100,13 @@ namespace My_Manager_Extension
         internal static Dictionary<string, object> GetSettings()
         {
             // 設定ファイルが存在しない場合は新しく作成する
-            if (File.Exists(setting_file_path) == false)
+            if (File.Exists(settings_file_path) == false)
             {
                 SetSettings(initial_setting_data);
             }
             // 設定ファイルを読み込む
-            string setting_file_data = File.ReadAllText(setting_file_path);
-            object setting_data = Functions.JsonConvert_DeserializeObject(JToken.Parse(setting_file_data));
+            string settings_file_data = File.ReadAllText(settings_file_path);
+            object setting_data = Functions.JsonConvert_DeserializeObject(JToken.Parse(settings_file_data));
             if (setting_data.GetType().IsGenericType == true)
             {
                 // デシリアライズしたデータがジェネリックタイプの場合
@@ -130,17 +130,17 @@ namespace My_Manager_Extension
         internal static void SetSettings(Dictionary<string, object> setting_data)
         {
             // 設定データをシリアライズして保存する
-            string setting_file_data = JsonConvert.SerializeObject(setting_data, Formatting.Indented);
+            string settings_file_data = JsonConvert.SerializeObject(setting_data, Formatting.Indented);
             try
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(setting_file_path));
-                File.WriteAllText(setting_file_path, setting_file_data);
+                Directory.CreateDirectory(Path.GetDirectoryName(settings_file_path));
+                File.WriteAllText(settings_file_path, settings_file_data);
             }
             catch (UnauthorizedAccessException)
             {
                 // 書き込み権限がない場合
                 Assembly executing_assembly = Assembly.GetExecutingAssembly();
-                if (MessageBox.Show((string)Application.Current.FindResource("other/file_write_permission_error_message"), (string)Application.Current.FindResource("other/file_write_permission_error_title") + " - " + executing_assembly.GetName().Name, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                if (MessageBox.Show("権限がないためファイルシステムにアクセスできません。\n管理者権限でアプリケーションを再起動しますか？\n※現在のプロセスはどのような選択をしても終了します。", "エラー" + " - " + executing_assembly.GetName().Name, MessageBoxButton.YesNo) == MessageBoxResult.Yes) // 要ローカライズ
                 {
                     // ユーザーが指示した場合に管理者権限で再起動する
                     Functions.RestartApplication(run_as: true);
@@ -155,14 +155,14 @@ namespace My_Manager_Extension
         internal static void InitializeSettings()
         {
             // 設定ファイル（ディレクトリ）を削除する
-            if (Directory.Exists(setting_file_path) == true)
+            if (Directory.Exists(settings_file_path) == true)
             {
-                DirectoryInfo di = new DirectoryInfo(setting_file_path);
+                DirectoryInfo di = new DirectoryInfo(settings_file_path);
                 di.Delete(true);
             }
             else
             {
-                File.Delete(setting_file_path);
+                File.Delete(settings_file_path);
             }
             // 設定データのキャッシュを消去する
             _setting_data_cache = null;
@@ -220,7 +220,7 @@ namespace My_Manager_Extension
                 {
                     // 書き込み権限がない場合
                     Assembly executing_assembly = Assembly.GetExecutingAssembly();
-                    if (MessageBox.Show((string)Application.Current.FindResource("other/file_write_permission_error_message"), (string)Application.Current.FindResource("other/file_write_permission_error_title") + " - " + executing_assembly.GetName().Name, MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    if (MessageBox.Show("権限がないためファイルシステムにアクセスできません。\n管理者権限でアプリケーションを再起動しますか？\n※現在のプロセスはどのような選択をしても終了します。", "エラー" + " - " + executing_assembly.GetName().Name, MessageBoxButton.YesNo) == MessageBoxResult.Yes) // 要ローカライズ
                     {
                         // ユーザーが指示した場合に管理者権限で再起動する
                         Functions.RestartApplication(run_as: true);
